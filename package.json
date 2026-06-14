@@ -18,52 +18,63 @@
     "dark",
     "light"
   ],
-  "icon": "images/icon.png",
+  "icon": "icon.png",
   "activationEvents": [
     "onStartupFinished"
   ],
   "publisher": "ArthurLobo",
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArthurLobopro/easy-codesnap"
+  },
   "contributes": {
     "configuration": {
       "properties": {
-        "easy-theme.morningTheme": {
-          "type": "string",
-          "description": "Theme to use in the morning period."
-        },
-        "easy-theme.afternoonTheme": {
-          "type": "string",
-          "description": "Theme to use in the afternoon period."
-        },
-        "easy-theme.eveningTheme": {
-          "type": "string",
-          "description": "Theme to use in the evening/night period."
+        "easy-theme.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable automatic theme switching.",
+          "order": 1
         },
         "easy-theme.morningStart": {
           "type": "number",
           "default": 6,
           "minimum": 0,
           "maximum": 23,
-          "description": "Hour when the morning period starts (0–23)."
+          "description": "Hour when the morning period starts (0–23).",
+          "order": 2
+        },
+        "easy-theme.morningTheme": {
+          "type": "string",
+          "description": "Theme to use in the morning period.",
+          "order": 3
         },
         "easy-theme.afternoonStart": {
           "type": "number",
           "default": 12,
           "minimum": 0,
           "maximum": 23,
-          "description": "Hour when the afternoon period starts (0–23)."
+          "description": "Hour when the afternoon period starts (0–23).",
+          "order": 4
+        },
+        "easy-theme.afternoonTheme": {
+          "type": "string",
+          "description": "Theme to use in the afternoon period.",
+          "order": 5
         },
         "easy-theme.eveningStart": {
           "type": "number",
           "default": 18,
           "minimum": 0,
           "maximum": 23,
-          "description": "Hour when the evening period starts (0–23)."
+          "description": "Hour when the evening period starts (0–23).",
+          "order": 6
         },
-        "easy-theme.enabled": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable or disable automatic theme switching."
+        "easy-theme.eveningTheme": {
+          "type": "string",
+          "description": "Theme to use in the evening/night period.",
+          "order": 7
         }
       }
     },
