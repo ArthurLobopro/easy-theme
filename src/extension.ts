@@ -2,18 +2,17 @@ import * as vscode from "vscode";
 import { ApplyNowCommand } from "./commands/ApplyNowCommand";
 import { ListInstalledThemesCommand } from "./commands/ListInstalledThemesCommand";
 import { ShowStatusCommand } from "./commands/ShowStatusCommand";
+import { StatusbarButton } from "./StatusBarButton";
 import {
   getCurrentPeriod,
   getSchedulerConfig,
   getThemeForPeriod,
   msUntilNextPeriodChange,
-  periodLabel
+  periodLabel,
 } from "./scheduler";
-import { StatusbarButton } from "./StatusBarButton";
 import { applyTheme } from "./themes";
 
-let schedulerTimer: NodeJS.Timeout | undefined;
-
+let schedulerTimer: ReturnType<typeof setTimeout> | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("Theme Scheduler activated.");
@@ -24,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     new ApplyNowCommand().register(),
     new ShowStatusCommand().register(),
-    new ListInstalledThemesCommand().register()
+    new ListInstalledThemesCommand().register(),
   );
 
   context.subscriptions.push(
@@ -32,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (e.affectsConfiguration("easy-theme")) {
         reschedule(getSchedulerConfig());
       }
-    })
+    }),
   );
 
   reschedule();
@@ -40,11 +39,9 @@ export function activate(context: vscode.ExtensionContext) {
   function reschedule(config = getSchedulerConfig()) {
     clearTimeout(schedulerTimer);
 
-
     applyThemeForCurrentTime(false);
     scheduleNextCheck();
     button.updateStatusBar(config);
-
   }
 }
 
@@ -69,7 +66,7 @@ export async function applyThemeForCurrentTime(manual: boolean) {
   if (!config.enabled) {
     if (manual) {
       vscode.window.showInformationMessage(
-        "Theme Scheduler is disabled. Enable it in settings."
+        "Theme Scheduler is disabled. Enable it in settings.",
       );
     }
     return;
@@ -85,7 +82,7 @@ export async function applyThemeForCurrentTime(manual: boolean) {
 
   if (manual && applied) {
     vscode.window.showInformationMessage(
-      `Theme Scheduler: Applied "${theme}" for ${periodLabel(period).toLowerCase()}.`
+      `Theme Scheduler: Applied "${theme}" for ${periodLabel(period).toLowerCase()}.`,
     );
   }
 }

@@ -8,7 +8,10 @@ export class StatusbarButton implements vscode.Disposable {
   private static instance: StatusbarButton | null = null;
 
   private constructor() {
-    const button = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 150);
+    const button = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Right,
+      150,
+    );
     button.name = "$(color-mode)";
     button.command = "easy-theme.showStatus";
     button.tooltip = "Theme Scheduler — click for details";
@@ -18,13 +21,13 @@ export class StatusbarButton implements vscode.Disposable {
   }
 
   static getInstance() {
-    if (this.instance) {
-      return this.instance;
+    if (StatusbarButton.instance) {
+      return StatusbarButton.instance;
     }
 
-    this.instance = new StatusbarButton();
+    StatusbarButton.instance = new StatusbarButton();
 
-    return this.instance;
+    return StatusbarButton.instance;
   }
 
   updateStatusBar(config = getSchedulerConfig()) {

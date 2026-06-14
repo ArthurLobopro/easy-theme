@@ -21,7 +21,7 @@ export class ListInstalledThemesCommand extends Command {
               `Set "${selected.label}" as which period's theme?`,
               "Morning ☀️",
               "Afternoon 🌤️",
-              "Evening 🌙"
+              "Evening 🌙",
             )
             .then((period) => {
               if (!period) {
@@ -38,7 +38,7 @@ export class ListInstalledThemesCommand extends Command {
                 .update(key, selected.label, vscode.ConfigurationTarget.Global)
                 .then(() => {
                   vscode.window.showInformationMessage(
-                    `Theme Scheduler: "${selected.label}" set as ${period} theme.`
+                    `Theme Scheduler: "${selected.label}" set as ${period} theme.`,
                   );
                 });
             });

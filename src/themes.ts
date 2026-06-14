@@ -23,12 +23,17 @@ export const VSCODE_BUILTIN_THEMES: readonly string[] = [
   "Default High Contrast Light",
 ] as const;
 
+interface ThemeProperties {
+  id: string;
+  label: string;
+}
 
 export function getAllInstalledThemes(): string[] {
   const fromExtensions = vscode.extensions.all
     .flatMap((ext) => {
-      const themes: any[] = ext.packageJSON?.contributes?.themes ?? [];
-      return themes.map((t) => (t.label as string) ?? (t.id as string));
+      const themes: ThemeProperties[] =
+        ext.packageJSON?.contributes?.themes ?? [];
+      return themes.map((t) => t?.label ?? t?.id);
     })
     .filter(Boolean);
 
@@ -45,7 +50,7 @@ export async function applyTheme(themeName: string): Promise<boolean> {
   if (!allThemes.includes(themeName)) {
     vscode.window.showWarningMessage(
       `Theme Scheduler: Theme "${themeName}" not found. ` +
-      `Check your settings or run "List Installed Themes".`
+        `Check your settings or run "List Installed Themes".`,
     );
     return false;
   }
@@ -54,7 +59,7 @@ export async function applyTheme(themeName: string): Promise<boolean> {
   await config.update(
     "colorTheme",
     themeName,
-    vscode.ConfigurationTarget.Global
+    vscode.ConfigurationTarget.Global,
   );
   return true;
 }

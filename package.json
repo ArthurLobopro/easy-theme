@@ -99,7 +99,9 @@
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "node esbuild.js --production"
+    "package": "node esbuild.js --production",
+    "lint": "biome check",
+    "lint:fix": "biome check --write"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",

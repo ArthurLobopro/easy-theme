@@ -24,22 +24,27 @@ export function getSchedulerConfig(): SchedulerConfig {
     morningStart: cfg.get<number>("morningStart", 6),
     afternoonStart: cfg.get<number>("afternoonStart", 12),
     eveningStart: cfg.get<number>("eveningStart", 18),
-    currentTheme: getCurrentTheme()
+    currentTheme: getCurrentTheme(),
   };
 }
 
 /**
  * Given the current hour and schedule config, returns which period is active.
  */
-export function getCurrentPeriod(hour: number, config: SchedulerConfig): Period {
+export function getCurrentPeriod(
+  hour: number,
+  config: SchedulerConfig,
+): Period {
   const { morningStart, afternoonStart, eveningStart } = config;
 
   // Normalize to handle arbitrary ordering
-  const periods = ([
-    { name: "morning" satisfies Period, start: morningStart },
-    { name: "afternoon" satisfies Period, start: afternoonStart },
-    { name: "evening" satisfies Period, start: eveningStart },
-  ] as const).toSorted((a, b) => a.start - b.start);
+  const periods = (
+    [
+      { name: "morning" satisfies Period, start: morningStart },
+      { name: "afternoon" satisfies Period, start: afternoonStart },
+      { name: "evening" satisfies Period, start: eveningStart },
+    ] as const
+  ).toSorted((a, b) => a.start - b.start);
 
   // Walk backwards to find the last period whose start <= current hour
   let activePeriod = periods.at(-1)!.name;
@@ -54,7 +59,10 @@ export function getCurrentPeriod(hour: number, config: SchedulerConfig): Period 
 /**
  * Returns the theme name for a given period.
  */
-export function getThemeForPeriod(period: Period, config: SchedulerConfig): string {
+export function getThemeForPeriod(
+  period: Period,
+  config: SchedulerConfig,
+): string {
   switch (period) {
     case "morning":
       return config.morningTheme;
@@ -89,17 +97,20 @@ export function msUntilNextPeriodChange(config: SchedulerConfig): number {
   const currentMinutes = now.getMinutes();
   const currentSeconds = now.getSeconds();
 
-  const starts = [config.morningStart, config.afternoonStart, config.eveningStart].sort(
-    (a, b) => a - b
-  );
+  const starts = [
+    config.morningStart,
+    config.afternoonStart,
+    config.eveningStart,
+  ].sort((a, b) => a - b);
 
   // Find the next start hour greater than current hour
   const nextStart = starts.find((h) => h > currentHour) ?? starts[0] + 24;
 
   const minutesUntilNextHour = 60 - currentMinutes;
-  const hoursUntilNext = nextStart > currentHour
-    ? nextStart - currentHour - 1
-    : nextStart + 24 - currentHour - 1;
+  const hoursUntilNext =
+    nextStart > currentHour
+      ? nextStart - currentHour - 1
+      : nextStart + 24 - currentHour - 1;
 
   const totalMinutes = hoursUntilNext * 60 + minutesUntilNextHour;
   const totalMs = totalMinutes * 60 * 1000 - currentSeconds * 1000;
