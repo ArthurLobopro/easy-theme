@@ -1,0 +1,17 @@
+.vscode/**
+.vscode-test/**
+.github/**
+
+# Source
+src/**
+**/*.map
+**/*.ts
+node_modules
+
+#Config
+**/tsconfig.json
+*.config.js
+.yarnrc
+.gitignore
+biome.*
+esbuild.js
