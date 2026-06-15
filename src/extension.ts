@@ -10,12 +10,12 @@ import {
   msUntilNextPeriodChange,
   periodLabel,
 } from "./scheduler";
-import { applyTheme } from "./themes";
+import { applyTheme, getAllInstalledThemes } from "./themes";
 
 let schedulerTimer: ReturnType<typeof setTimeout> | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log("Theme Scheduler activated.");
+  console.log("Easy Theme activated.");
 
   const button = StatusbarButton.getInstance();
   context.subscriptions.push(button);
@@ -66,7 +66,7 @@ export async function applyThemeForCurrentTime(manual: boolean) {
   if (!config.enabled) {
     if (manual) {
       vscode.window.showInformationMessage(
-        "Theme Scheduler is disabled. Enable it in settings.",
+        "Easy Theme is disabled. Enable it in settings.",
       );
     }
     return;
@@ -76,13 +76,15 @@ export async function applyThemeForCurrentTime(manual: boolean) {
   const period = getCurrentPeriod(hour, config);
   const theme = getThemeForPeriod(period, config);
 
+  if (!theme) return;
+
   const applied = await applyTheme(theme);
 
   StatusbarButton.getInstance().updateStatusBar();
 
   if (manual && applied) {
     vscode.window.showInformationMessage(
-      `Theme Scheduler: Applied "${theme}" for ${periodLabel(period).toLowerCase()}.`,
+      `Easy Theme: Applied "${theme}" for ${periodLabel(period).toLowerCase()}.`,
     );
   }
 }

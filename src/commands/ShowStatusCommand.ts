@@ -17,15 +17,17 @@ export class ShowStatusCommand extends Command {
     const period = getCurrentPeriod(hour, config);
     const theme = getThemeForPeriod(period, config);
 
+    const { morningTheme, afternoonTheme, eveningTheme } = config;
+
     const lines = [
       `Theme Scheduler — ${config.enabled ? "Enabled ✅" : "Disabled ❌"}`,
       "",
       `Current period: ${periodLabel(period)} (${theme})`,
       "",
       "Schedule:",
-      `- ${periodLabel("morning")} from ${pad(config.morningStart)}:00 → \`${config.morningTheme ?? "Not Setted"}\``,
-      `- ${periodLabel("afternoon")} from ${pad(config.afternoonStart)}:00 → \`${config.afternoonTheme ?? "Not Setted"}\``,
-      `- ${periodLabel("evening")} from ${pad(config.eveningStart)}:00 → \`${config.eveningTheme ?? "Not Setted"}\``,
+      `- ${periodLabel("morning")} from ${pad(config.morningStart)}:00 → ${themeLabel(morningTheme)}`,
+      `- ${periodLabel("afternoon")} from ${pad(config.afternoonStart)}:00 → ${themeLabel(afternoonTheme)}`,
+      `- ${periodLabel("evening")} from ${pad(config.eveningStart)}:00 → ${themeLabel(eveningTheme)}`,
     ].join("\n");
 
     vscode.window
@@ -36,6 +38,10 @@ export class ShowStatusCommand extends Command {
         }
       });
   }
+}
+
+function themeLabel(theme: string | null) {
+  return theme ? `(${theme})` : "Not Setted";
 }
 
 function pad(n: number): string {

@@ -5,9 +5,9 @@ export type Period = "morning" | "afternoon" | "evening";
 
 export interface SchedulerConfig {
   enabled: boolean;
-  morningTheme: string;
-  afternoonTheme: string;
-  eveningTheme: string;
+  morningTheme: string | null;
+  afternoonTheme: string | null;
+  eveningTheme: string | null;
   currentTheme: string;
   morningStart: number;
   afternoonStart: number;
@@ -35,24 +35,45 @@ export function getCurrentPeriod(
   hour: number,
   config: SchedulerConfig,
 ): Period {
-  const { morningStart, afternoonStart, eveningStart } = config;
+  const {
+    morningStart,
+    afternoonStart,
+    eveningStart,
+    morningTheme,
+    afternoonTheme,
+    eveningTheme,
+  } = config;
 
   // Normalize to handle arbitrary ordering
   const periods = (
     [
-      { name: "morning" satisfies Period, start: morningStart },
-      { name: "afternoon" satisfies Period, start: afternoonStart },
-      { name: "evening" satisfies Period, start: eveningStart },
+      {
+        name: "morning" satisfies Period,
+        start: morningStart,
+        theme: morningTheme,
+      },
+      {
+        name: "afternoon" satisfies Period,
+        start: afternoonStart,
+        theme: afternoonTheme,
+      },
+      {
+        name: "evening" satisfies Period,
+        start: eveningStart,
+        theme: eveningTheme,
+      },
     ] as const
   ).toSorted((a, b) => a.start - b.start);
 
   // Walk backwards to find the last period whose start <= current hour
   let activePeriod = periods.at(-1)!.name;
+
   for (const period of periods) {
-    if (hour >= period.start) {
+    if (hour >= period.start && period.theme) {
       activePeriod = period.name;
     }
   }
+
   return activePeriod;
 }
 
@@ -62,7 +83,7 @@ export function getCurrentPeriod(
 export function getThemeForPeriod(
   period: Period,
   config: SchedulerConfig,
-): string {
+): string | null {
   switch (period) {
     case "morning":
       return config.morningTheme;
