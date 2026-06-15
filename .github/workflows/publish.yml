@@ -1,0 +1,29 @@
+name: Publish Extension
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'package.json'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Install vsce
+        run: npm i -g @vscode/vsce
+        
+      - name: Publish Extension on VSCODE
+        run: vsce publish -p ${{secrets.PUBLISH_TOKEN}} --skip-duplicate
